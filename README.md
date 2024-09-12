@@ -1,0 +1,14 @@
+
+**Foxy Video Scraping: Web Scraping (Real-Time), OCR, Data Labeling, Data Modeling, Export to Database and Spreadsheets**
+
+FOXY is a cross-platform software available in English, Spanish, and Portuguese. It is designed to perform real-time web scraping and video file scraping using OCR.
+
+The first module, **"Collector"**, handles capturing screenshots or snapshots. You can configure an image to act as a signal for the start of the capture, another for optional captures after the session starts, and another to indicate the end of the session. Additionally, you can define an area to detect changes and perform captures if alterations are detected in that area. Parameters can be adjusted to define the similarity required for "activation points" and the threshold difference for the comparison area. Once the capture session starts and the image indicating the end of the session is detected, the system re-analyzes the frames in search of the image that signals the start of the session.
+
+The system features a user-friendly console interface that guides users through all processes. It also allows creating multiple "Screen Sessions" within the same project, making it easy to organize captures into different groups or folders. All captures are placed in a messaging queue with metadata, including timestamp, session code, and other data, to facilitate processing in the second module.
+
+The second module, **"Processor"**, allows selecting projects created in the "Collector" module and choosing screen sessions. In this module, it is necessary to specify the areas or sectors of the image in the captures and label these areas, defining parameters that facilitate the OCR and data modeling processes. Text areas to be extracted can be labeled with a name and assigned to a group. It also offers an interface that allows performing pre-extraction tests to anticipate the final result or adjust parameters such as thresholds and the final data type of each area (string, decimal, or integer). The extraction/OCR process can run in parallel with the "Collector" module, enabling data processing while captures are being made. All processed data is loaded into a RabbitMQ messaging queue, just like in the collection process. Finally, the software allows exporting data to a new or existing project database or to a spreadsheet.
+
+The database and spreadsheet structure is dynamic and defined based on the labeling of the "areas." For each defined group, a table is created in the database, while in the spreadsheet, the information is organized in a hierarchical format using multiple levels of indices. This allows detailed data organization, with each index level representing an additional dimension of the data, facilitating the visualization and analysis of the information. The names of the areas represent columns, and the data type is defined according to what was established during the labeling process.
+
+
