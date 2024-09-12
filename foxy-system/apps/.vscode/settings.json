@@ -1,0 +1,15 @@
+{
+    "files.autoSave": "afterDelay",
+    "editor.fontFamily": "Fira Code, Consolas, 'Courier New', monospace",
+    "pythonIndent.size": 4,
+    "pythonIndent.enable": true,
+    "glassit.alpha": 255,
+    "bitoAI.codeCompletion.enableAutoCompletion": true,
+    "bitoAI.codeCompletion.enableCommentToCode": true,
+    "editor.inlineSuggest.showToolbar": "onHover",
+    "workbench.colorTheme": "Default Dark Modern",
+    "editor.inlayHints.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "editor.formatOnSave": true,
+    "python.formatting.provider": "autopep8",
+}

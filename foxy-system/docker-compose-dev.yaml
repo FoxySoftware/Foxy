@@ -1,0 +1,48 @@
+services:
+  foxy-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: foxy-rabbitmq
+    hostname: "rabbitmq"
+    restart: unless-stopped
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+      - ../config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "pass"
+      RABBITMQ_NODENAME: "rabbit@rabbitmq"
+      RABBITMQ_LOGS: "error"
+    networks:
+      - main_foxy_net
+
+  foxy-apps:
+    user: foxy
+    container_name: foxy-apps
+    init: true
+    restart: unless-stopped
+    image: bueltan/foxy-system-base:libs
+    #build:
+    #  dockerfile: Dockerfile
+    command: >
+      bash -c "tail -f /dev/null"
+    volumes:
+      - ../Projects:/apps/Projects
+      - ../config:/apps/config
+      - ./apps:/apps
+    networks:
+      - main_foxy_net
+    depends_on:
+      - foxy-rabbitmq
+
+networks:
+  main_foxy_net:
+    name: main_foxy_net
+    driver: bridge
+
+volumes:
+  rabbitmq_data:
+    driver: local

@@ -1,0 +1,4 @@
+Projects/
+*.tar
+__pycache__/
+foxy-system/rabbitmq_data/
