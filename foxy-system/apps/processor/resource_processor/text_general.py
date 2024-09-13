@@ -1,6 +1,10 @@
 
 
 en = {
+        
+        "option_copy_from_other_area_EN": "Copy properties from another area",
+        "message_copy_from_other_area_EN": "Select the area from which to copy the configurations",
+
         "option_export_database_EN": "Create and Export to a SQLite Database",
         "option_export_existing_database_EN": "Export to an Existing SQLite Database",
         "option_export_spreadsheet_EN": "Export to a Spreadsheet",
@@ -120,6 +124,10 @@ en = {
 
 
 es = {
+        "option_copy_from_other_area_ES": "Copiar las propiedades de otra área",
+        "message_copy_from_other_area_ES": "Seleccione el área desde la cual copiar las configuraciones",
+       
+    
         "option_activate_gpu_ES": "Activar GPU para el procesador de OCR",
         "option_disable_gpu_ES": "Desactivar GPU para el procesador de OCR",
         "message_gpu_ocr_ES": "Es opcional y solo válido para tarjetas gráficas con soporte CUDA. Si está activo, el proceso de reconocimiento de caracteres será más rápido.",
@@ -235,6 +243,10 @@ es = {
     }
 
 pt = {
+    
+    "option_copy_from_other_area_PT": "Copiar as propriedades de outra área",
+    "message_copy_from_other_area_PT": "Selecione a área de onde copiar as configurações", 
+        
     "option_activate_gpu_PT": "Ativar GPU para o processador de OCR",
     "option_disable_gpu_PT": "Desativar GPU para o processador de OCR",
     "message_gpu_ocr_PT": "É opcional e válido apenas para placas gráficas com suporte a CUDA. Se ativado, o processo de reconhecimento de caracteres será mais rápido.",

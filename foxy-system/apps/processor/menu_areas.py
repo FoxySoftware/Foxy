@@ -81,6 +81,10 @@ class MenuAreas(PanelArea):
         self.option_test_setting_area:str =  f"{Colors.YELLOW}9: {text_general.map[f'option_test_setting_area_{self.current_language}']}{Colors.RESET}"
         self.option_menu_area:str =  f"{Colors.BLUE}➔{Colors.RESET} {text_general.map[f'option_menu_area_{self.current_language}']}"
         
+        #copy_properties area 
+        self.option_copy_from_other_area:str =  f"{Colors.GREEN}10:{Colors.RESET} {text_general.map[f'option_copy_from_other_area_{self.current_language}']}"
+
+        
     @property
     def folder_manager(self) -> FolderManager:
         return self._folder_manager()
@@ -104,7 +108,7 @@ class MenuAreas(PanelArea):
                         self.option_menu_set_low_text_ocr,
                         self.option_menu_block_list_final,
                         self.option_menu_select_type_final_value, 
-                        
+                        self.option_copy_from_other_area,
                             self.option_test_setting_area,
                             self.option_menu_area,
                             self.option_back_to_main_menu
@@ -421,7 +425,12 @@ class MenuAreas(PanelArea):
                     continue
                 else:
                     current_option = self.handle_options_main_area_setting()
-
+                    
+            elif current_option == self.option_copy_from_other_area:
+                self.handle_copy_properties_area(area_to_update=current_area_model)
+                current_option = self.option_main_setting_area
+                continue
+            
             elif current_option == self.option_menu_area:
                 break
             
@@ -518,3 +527,106 @@ class MenuAreas(PanelArea):
         
         self.loop_area_setting(current_area_model=area_selected, list_areas_model=self.list_areas_model)
         
+    def handle_copy_properties_area(self, area_to_update:AreaOcrModel) -> str:
+        # MARK: HANDLE COPY AREA PROPERTIES
+
+        add_case_name_without_number = "_1"
+        symbol_group_with_space = f"{SET_SYMBOL} "
+        area_model_to_copy:AreaOcrModel | None = None
+        message_copy_from_other_area:str =  f"{text_general.map[f'message_copy_from_other_area_{self.current_language}']}"
+
+        
+        def replace_last_occurrence(s, old, new)->str:
+            parts = s.rsplit(old, 1)  
+            return new.join(parts)
+        
+        def contains_number(s) -> bool:
+            return bool(re.search(r'\d', s))
+        
+        def extract_numbers_from_string(s) -> list[int]:
+            return [int(num) for num in re.findall(r'\d+', s)]
+        
+        def check_if_name_is_unique(new_name_area:str, group_name_source:str | None ) -> bool:
+            list_area_coincidence = [area for area in self.list_areas_model if area.name.value == new_name_area and area.group_name.value == group_name_source]
+            return len(list_area_coincidence) == 0
+            
+        def get_new_name_area(area_model:AreaOcrModel) -> str:
+            name_area_model:str = area_model.name.value
+            #case where the name has a number
+            if contains_number(name_area_model):
+                number_of_name:int = extract_numbers_from_string(name_area_model)[-1]
+                is_no_unique_name = True
+                
+                while is_no_unique_name:
+                    new_number:int =  number_of_name + 1
+                    new_name_area:str = replace_last_occurrence(name_area_model, str(number_of_name), str(new_number) )
+                    number_of_name = new_number  
+                    is_no_unique_name = not check_if_name_is_unique(new_name_area, area_model.group_name.value)
+                    name_area_model = new_name_area
+
+            else:
+                is_no_unique_name = True
+                new_name_area = name_area_model + add_case_name_without_number
+                while is_no_unique_name:
+                    is_no_unique_name = not check_if_name_is_unique(new_name_area, area_model.group_name.value)
+                    
+                    if is_no_unique_name:
+                        number_of_name = extract_numbers_from_string(new_name_area)[-1] + 1
+                        new_name_area = replace_last_occurrence(new_name_area, str(number_of_name - 1), str(number_of_name))
+                
+            
+            return new_name_area
+
+            
+        def get_area_with_name_and_group(name_area:str, group_name:str|None) -> AreaOcrModel:
+            _list_area = [area for area in self.list_areas_model if area.name.value == name_area and area.group_name.value == group_name]
+            return _list_area[-1]
+            
+        
+        list_name_areas_without_group:list[str] = [area_model.name.value for area_model in  self.list_areas_model if area_model.name.value is not None and area_model.group_name.value is None]
+        list_name_of_group = [f"{symbol_group_with_space}{area_model.group_name.value}" for area_model in self.list_areas_model if area_model.group_name.value is not None]
+        set_name_of_group:set[str] = set(list_name_of_group)
+        list_name_of_group = list(set_name_of_group)
+        selected_option:str =  self.prompt_options(default_option=None,
+                                                   others_options=[*list_name_of_group, *list_name_areas_without_group, self.option_menu_area],
+                                                   message=message_copy_from_other_area)
+        
+        if selected_option == self.option_menu_area:
+            return self.option_menu_area
+        
+        if symbol_group_with_space in selected_option:
+            group_name = selected_option.replace(symbol_group_with_space, "")
+            list_name_areas_with_group:list[str] = [area_model.name.value for area_model in  self.list_areas_model if area_model.name.value is not None and area_model.group_name.value == group_name]
+            selected_option:str =  self.prompt_options(default_option=None,
+                                                       others_options=[*list_name_areas_with_group, self.option_menu_area], 
+                                                       message=message_copy_from_other_area)
+            
+            if selected_option == self.option_menu_area:
+                return self.option_menu_area
+            
+            area_model_to_copy = get_area_with_name_and_group(name_area=selected_option, group_name=group_name)
+
+        elif symbol_group_with_space not in selected_option:
+            area_model_to_copy = get_area_with_name_and_group(name_area=selected_option, group_name=None)
+            
+        if area_model_to_copy is not None:
+            name_of_area_to_update:str = get_new_name_area(area_model=area_model_to_copy) 
+            #name
+            area_to_update.name.set_value(name_of_area_to_update)
+            #group name
+            area_to_update.group_name.set_value(value=area_model_to_copy.group_name.value)
+            #ocr_allow_list
+            area_to_update.ocr_allow_list.set_value(value=area_model_to_copy.ocr_allow_list.value)
+            #ocr_block_list
+            area_to_update.ocr_block_list.set_value(value=area_model_to_copy.ocr_block_list.value)
+            #final_block_list
+            area_to_update.final_block_list.set_value(value=area_model_to_copy.final_block_list.value)
+            #ocr_text_threshold
+            area_to_update.ocr_text_threshold.set_value(value=area_model_to_copy.ocr_text_threshold.value)
+            #ocr_low_text
+            area_to_update.ocr_low_text.set_value(value=area_model_to_copy.ocr_low_text.value)
+            #type_final_value
+            area_to_update.type_final_value.set_value(value=area_model_to_copy.type_final_value.value)
+            self.setting_manager.update_areas_ocr_section_config(area_model=area_to_update)
+    
+        return self.option_menu_area

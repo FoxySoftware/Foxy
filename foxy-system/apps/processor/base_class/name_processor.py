@@ -1,6 +1,8 @@
-from base_class.area_ocr_model import AreaOcrModel
 from resource_processor import text_general
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from area_ocr_model import AreaOcrModel
 
 MIDDLE_SYMBOL = " ∈ "  # BELONG TO A SET.
 SET_SYMBOL = "⋓"
@@ -35,7 +37,7 @@ class NameProcessor:
         prefix_str = self.prefix(prefix_name) if prefix_name else ""
         return f"{prefix_str}{name}"
 
-    def get_full_name_area(self, area_model: AreaOcrModel, without_n_area=False):
+    def get_full_name_area(self, area_model: "AreaOcrModel", without_n_area=False):
         key = str(area_model.key.value)
         base_name = f"{text_general.map[f'area_number_{self.current_language}']}: {key}"
 

@@ -3,6 +3,7 @@ from enum import Enum
 import re
 
 from base_class.data_processor_enums import StructureType
+from processor.base_class.name_processor import SET_SYMBOL
 
 if __name__ == "__main__":
     from shared_keys import SharedKeys
@@ -64,7 +65,7 @@ class AreaOcrModel():
                                                         key_name_final=SharedKeys.KEY_AREA_NAME.value)
         
         self.group_name: StandardDataModel = StandardDataModel(type=AreaType.STRING.value,
-                                                              description="The group name to which this OCR area belongs.",
+                                                              description=f"The group name to which this OCR area belongs. is represented with this symbol {SET_SYMBOL}",
                                                               purpose="Organizes multiple OCR areas into logical groups for easier management.",
                                                               input_user=True,
                                                               required=True,
