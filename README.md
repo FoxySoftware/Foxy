@@ -1,14 +1,37 @@
-
-**Foxy Video Scraping: Web Scraping (Real-Time), OCR, Data Labeling, Data Modeling, Export to Database and Spreadsheets**
-
-FOXY is a cross-platform software available in English, Spanish, and Portuguese. It is designed to perform real-time web scraping and video file scraping using OCR.
-
-The first module, **"Collector"**, handles capturing screenshots or snapshots. You can configure an image to act as a signal for the start of the capture, another for optional captures after the session starts, and another to indicate the end of the session. Additionally, you can define an area to detect changes and perform captures if alterations are detected in that area. Parameters can be adjusted to define the similarity required for "activation points" and the threshold difference for the comparison area. Once the capture session starts and the image indicating the end of the session is detected, the system re-analyzes the frames in search of the image that signals the start of the session.
-
-The system features a user-friendly console interface that guides users through all processes. It also allows creating multiple "Screen Sessions" within the same project, making it easy to organize captures into different groups or folders. All captures are placed in a messaging queue with metadata, including timestamp, session code, and other data, to facilitate processing in the second module.
-
-The second module, **"Processor"**, allows selecting projects created in the "Collector" module and choosing screen sessions. In this module, it is necessary to specify the areas or sectors of the image in the captures and label these areas, defining parameters that facilitate the OCR and data modeling processes. Text areas to be extracted can be labeled with a name and assigned to a group. It also offers an interface that allows performing pre-extraction tests to anticipate the final result or adjust parameters such as thresholds and the final data type of each area (string, decimal, or integer). The extraction/OCR process can run in parallel with the "Collector" module, enabling data processing while captures are being made. All processed data is loaded into a RabbitMQ messaging queue, just like in the collection process. Finally, the software allows exporting data to a new or existing project database or to a spreadsheet.
-
-The database and spreadsheet structure is dynamic and defined based on the labeling of the "areas." For each defined group, a table is created in the database, while in the spreadsheet, the information is organized in a hierarchical format using multiple levels of indices. This allows detailed data organization, with each index level representing an additional dimension of the data, facilitating the visualization and analysis of the information. The names of the areas represent columns, and the data type is defined according to what was established during the labeling process.
+![](https://raw.githubusercontent.com/FoxySoftware/FoxySoftware.github.io/main/resource/foxy_title.png)
 
 
+Foxy is a cross-platform software available in English, Spanish, and Portuguese, designed for real-time web scraping and video file scraping using Optical Character Recognition (OCR).
+
+##  Modules Overview
+
+### 1. Collector Module
+
+The "Collector" module is responsible for capturing screenshots or snapshots. You can configure specific images to trigger various stages of the capture session:
+
+    Start Image: Signals the beginning of the capture session.
+    Optional Capture Images: Defines additional images to capture after the session has started.
+    End Image: Indicates the conclusion of the session.
+
+Additionally, you can set up a detection area to monitor for changes. The system will capture images if any alterations are detected within this defined area. Parameters can be customized to specify the similarity needed for "activation points" and the threshold difference for change detection. Once the end-of-session image is detected, the system will re-analyze the frames to find the start-of-session image.
+
+The module features a user-friendly console interface that guides users through all processes. It also supports the creation of multiple "Screen Sessions" within the same project, facilitating the organization of captures into different groups or folders. All captures are managed in a messaging queue with metadata, including timestamp, session code, and additional data, to streamline processing in the next module.
+
+### 2. Processor Module
+
+The "Processor" module enables you to select projects and screen sessions created in the "Collector" module. Within this module, you need to define and label specific areas or sectors of the captured images. This labeling is crucial for the OCR and data modeling processes.
+
+### Key features include:
+
+    Area Labeling: Assign names and groups to text areas for extraction.
+    Pre-Extraction Testing: Perform tests to preview results and adjust parameters such as thresholds and data types (string, decimal, or integer).
+    Parallel Processing: OCR and data extraction can run simultaneously with ongoing captures from the "Collector" module.
+
+Processed data is uploaded to a RabbitMQ messaging queue, similar to the collection process. The software supports exporting data to either a new or existing project database or a spreadsheet.
+
+### Data Export and Organization
+
+The database and spreadsheet structures are dynamically defined based on the labeled areas:
+
+    Database: Each defined group corresponds to a table in the database.
+    Spreadsheet: Data is organized hierarchically using multiple levels of indices, allowing detailed and multi-dimensional data visualization and analysis. Column names are based on area labels, and data types are determined by the labeling process.
