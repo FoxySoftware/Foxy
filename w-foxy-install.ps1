@@ -1,17 +1,70 @@
+Write-Host "######################################"
+Write-Host "#     Welcome to Foxy Install!     #"
+Write-Host "#####################################"
+Write-Host
 
-Write-Output "######################################"
-Write-Output "#     Welcome to Foxy Initiator!     #"
-Write-Output "#####################################"
-Write-Output ""
+
 
 $currentDir = Get-Location
 $osHost = "Windows"
 
+
+
+$ErrorActionPreference = "Continue"
+
+$SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ICON_COLLECTOR = Join-Path $SCRIPT_DIR "foxy-system\icons\foxy_icon_collector.ico"  # Cambia a .ico
+$ICON_PROCESSOR = Join-Path $SCRIPT_DIR "foxy-system\icons\foxy_icon_processor.ico"  # Cambia a .ico
+$ICON_STOP = Join-Path $SCRIPT_DIR "foxy-system\icons\foxy_icon_stop.ico"            # Cambia a .ico
+$DESKTOP_FOLDER = [System.IO.Path]::Combine([Environment]::GetFolderPath('Desktop'), "")
+$APPLICATIONS_FOLDER = [System.IO.Path]::Combine([Environment]::GetFolderPath('ApplicationData'), "Microsoft\Windows\Start Menu\Programs\")
+
 # Definir la ruta al archivo .env
-$envFile = "config/os_general.env"
-$imageName = "bueltan/foxy-system-base:libs"
-$tarFile = "./foxy-system/foxy-system-base-libs.tar"
-$composeFile = "./foxy-system/docker-compose-dev.yaml"
+$imageName = "/bueltan/foxy-system-base:libs"
+$envFile =  Join-Path $SCRIPT_DIR "/config/os_general.env"
+$tarFile =  Join-Path $SCRIPT_DIR "/foxy-system/foxy-system-base-libs.tar"
+$composeFile =  Join-Path $SCRIPT_DIR "/foxy-system/docker-compose-dev.yaml"
+
+
+function Create-Shortcut {
+    param (
+        [string]$scriptName,
+        [string]$shortcutName,
+        [string]$iconPath
+    )
+
+    $scriptPath = Join-Path $SCRIPT_DIR $scriptName
+
+    if (Test-Path $scriptPath) {
+        $shell = New-Object -ComObject WScript.Shell
+        $desktopShortcut = $shell.CreateShortcut([System.IO.Path]::Combine($DESKTOP_FOLDER, "$shortcutName.lnk"))
+        $desktopShortcut.TargetPath = "powershell.exe"  # Ejecuta con PowerShell
+        $desktopShortcut.Arguments = "-ExecutionPolicy Bypass -File `"$scriptPath`""  # A ade el script como argumento
+        $desktopShortcut.IconLocation = $iconPath
+        $desktopShortcut.Save()
+        Write-Host "Shortcut for $shortcutName created at $($DESKTOP_FOLDER)$shortcutName.lnk"
+
+        $appsShortcut = $shell.CreateShortcut([System.IO.Path]::Combine($APPLICATIONS_FOLDER, "$shortcutName.lnk"))
+        $appsShortcut.TargetPath = "powershell.exe"  # Ejecuta con PowerShell
+        $appsShortcut.Arguments = "-ExecutionPolicy Bypass -File `"$scriptPath`""  # A ade el script como argumento
+        $appsShortcut.IconLocation = $iconPath
+        $appsShortcut.Save()
+        Write-Host "Shortcut for $shortcutName created at $($APPLICATIONS_FOLDER)$shortcutName.lnk"
+    } else {
+        Write-Host "Script $scriptPath not found. Skipping..."
+    }
+}
+
+# Create shortcuts for foxy-collector.ps1, foxy-processor.ps1, and foxy-stop.ps1
+Create-Shortcut "w-foxy-collector.ps1" "Foxy Collector" $ICON_COLLECTOR
+Create-Shortcut "w-foxy-processor.ps1" "Foxy Processor" $ICON_PROCESSOR
+Create-Shortcut "w-foxy-stop.ps1" "Foxy Stop" $ICON_STOP
+
+# Re-enable exit on error if desired later in the script
+$ErrorActionPreference = "Stop"
+
+
+
 
 # Verificar si el archivo .env ya existe
 if (-not (Test-Path $envFile)) {
@@ -94,3 +147,5 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 # Mensaje de confirmación
 Write-Output "Path saved to $envFile"
 
+# Pausar el script hasta que se presione una tecla
+Read-Host -Prompt "Press Enter to continue..."

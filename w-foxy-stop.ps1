@@ -21,8 +21,11 @@ Write-Host "#     Welcome to Foxy Stopper!       #"
 Write-Host "######################################"
 Write-Host
 
+
+$SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 # Define the path to the Docker Compose file
-$COMPOSE_FILE = "./foxy-system/docker-compose-dev.yaml"
+$COMPOSE_FILE = Join-Path $SCRIPT_DIR "/foxy-system/docker-compose-dev.yaml"
+
 
 # Check if Docker is installed
 if (Get-Command docker -ErrorAction SilentlyContinue) {

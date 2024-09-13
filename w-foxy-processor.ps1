@@ -24,10 +24,12 @@ Write-Host
 # Variables
 $APP_CONTAINER_NAME = "foxy-apps"
 $APP_SCRIPT_PATH = "processor/app.py"
-$INITIATOR_SCRIPT = "./w-foxy-install.ps1"
+
+$SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
+$INITIATOR_SCRIPT = Join-Path $SCRIPT_DIR "/w-foxy-install.ps1"
 
 # Set PowerShell Execution Policy
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+# Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 # Function to check if Docker is installed
 function Check-DockerInstalled {
