@@ -1,7 +1,9 @@
 import os
 import copy
+import re
 from types import NoneType
 from menu_panel_areas import PanelArea
+from processor.base_class.name_processor import SET_SYMBOL
 from settings_manager import SettingManager
 from folder_manager import FolderManager
 from base_class.area_ocr_model import AreaOcrModel
@@ -120,9 +122,9 @@ class MenuAreas(PanelArea):
         # name_area ∈/ None group_name a∈/A∩B
         
         list_name_group_with_prefix = [f"{self.name_with_prefix_or_name(name=area_model.group_name.value, prefix_name=area_model.name.value)}" 
-                                for area_model in list_areas_model if not isinstance(area_model.group_name.value, NoneType)]
+                                for area_model in list_areas_model if area_model.group_name.value is not None]
         
-        list_name_of_group = [area_model.group_name.value for area_model in list_areas_model if not isinstance(area_model.group_name.value, NoneType)]
+        list_name_of_group = [area_model.group_name.value for area_model in list_areas_model if area_model.group_name.value is not None]
         set_name_of_group:set[str] = set(list_name_of_group)
         list_name_of_group = list(set_name_of_group)
         
@@ -371,7 +373,8 @@ class MenuAreas(PanelArea):
     
     def loop_area_setting(self, current_area_model:AreaOcrModel,
                         list_areas_model:list[AreaOcrModel], current_option:str = None):
-        
+        # MARK: LOOP AREA SETTING 
+
         if not current_option:
             current_option = self.option_main_setting_area
             
@@ -452,9 +455,10 @@ class MenuAreas(PanelArea):
         return self.handle_options_main_area_setting()
 
     def handle_set_name_area(self, area_model:AreaOcrModel, list_areas_model:list[AreaOcrModel]):
-        
+        # MARK: HANDLE SET NAME AREA
+
         list_name_with_group = [f"{self.name_with_suffix_or_name(name=area_model.name.value, suffix_name=area_model.group_name.value)}" 
-                                for area_model in list_areas_model if not isinstance(area_model.name.value, NoneType)]
+                                for area_model in list_areas_model if area_model.name.value is not None]
         
         current_name:str | None = None
         if area_model.name.value:
@@ -475,6 +479,8 @@ class MenuAreas(PanelArea):
         return self.option_main_setting_area
 
     def handle_select_type_final_value(self, area_model:AreaOcrModel):
+        # MARK: HANDLE TYPE FINAL VALUE
+
         type_final_value = self.prompt_options(
             default_option=None,
             others_options=area_model.type_final_value.options,
@@ -485,6 +491,8 @@ class MenuAreas(PanelArea):
         return self.option_main_setting_area
     
     def handle_list_area_setting(self):
+        # MARK: HANDLE LIST AREA SETTING
+        
         list_menu_str_area_model:list[dict[str, str | AreaOcrModel]] = []
         self.setting_manager.__map_areas_state = None
         
@@ -509,6 +517,4 @@ class MenuAreas(PanelArea):
         
         
         self.loop_area_setting(current_area_model=area_selected, list_areas_model=self.list_areas_model)
-        
-        
         

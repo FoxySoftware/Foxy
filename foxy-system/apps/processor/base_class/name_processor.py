@@ -2,7 +2,9 @@ from base_class.area_ocr_model import AreaOcrModel
 from resource_processor import text_general
 
 
-MIDDLE_SYMBOL = " ∈ "  # Define a default value for MIDDLE_SYMBOL
+MIDDLE_SYMBOL = " ∈ "  # BELONG TO A SET.
+SET_SYMBOL = "⋓"
+
 
 class NameProcessor:
     def __init__(self, **kwargs) -> None:    

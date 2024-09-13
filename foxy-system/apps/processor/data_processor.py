@@ -97,7 +97,7 @@ class DataProcessor(RabbitMQ, DataStructure):
     
     @property
     def rabbit_processor(self) -> Handler: 
-        if  isinstance(self._rabbit_processor, NoneType) :
+        if  self._rabbit_processor is None:
             self.__init_rabbit_processor_handler()
         return self._rabbit_processor
     
@@ -395,7 +395,7 @@ class DataProcessor(RabbitMQ, DataStructure):
         self.__close_rabbit_processor_handler()
         
     def __close_rabbit_processor_handler(self):
-        if not isinstance(self._rabbit_processor, NoneType):
+        if self._rabbit_processor is not None:
             self._rabbit_processor.rabbitmq.close_active_connection()
             self._rabbit_processor = None
 

@@ -211,7 +211,7 @@ class GeneralPrompts:
                 raise inquirer.errors.ValidationError(
                     "", reason=f"Invalid name: {current}. Only letters, numbers, underscores, and hyphens are allowed.")
             
-            if current_name == current and not isinstance(current_name, NoneType) :
+            if current_name == current and current_name is not None :
                 return True
             
             if prefix:

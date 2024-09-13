@@ -122,7 +122,7 @@ class ScreenShotModel(NameProcessor):
     def grouped_areas(self) -> dict[str, list[AreaOcrModel] | AreaOcrModel]:
         dict_group = {}
         for area in self.list_area_model:
-            if not isinstance(area.group_name.value, NoneType):
+            if area.group_name.value is not None:
                 list_areas_grouped:list[AreaOcrModel] =  dict_group.get(area.group_name.value, [])
                 list_areas_grouped.append(area)
                 dict_group[area.group_name.value] = list_areas_grouped

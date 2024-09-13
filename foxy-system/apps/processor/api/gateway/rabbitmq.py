@@ -174,7 +174,7 @@ class RabbitMQ():
         return message_count
      
     def is_channel_connected(self, channel)-> bool:
-        if isinstance(channel ,NoneType):
+        if channel is None:
             return False
         try:
             # Try to perform a harmless operation to check if the channel is open

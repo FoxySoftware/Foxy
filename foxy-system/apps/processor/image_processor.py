@@ -53,7 +53,7 @@ class ImageProcessor(RabbitMQ):
     
     @property
     def rabbit_processor(self) -> Handler: 
-        if  isinstance(self._rabbit_processor, NoneType) :
+        if  self._rabbit_processor is None :
             self.__init_rabbit_processor_handler()
         return self._rabbit_processor
     
@@ -111,7 +111,7 @@ class ImageProcessor(RabbitMQ):
                 
     def stop_consume_collector(self, channel= None):
         self.set_current_data_task_dict(screenshot=None, message= "Image OCR Processor Stopped by User")
-        if not isinstance(channel, NoneType):
+        if channel is not None:
             channel.basic_cancel(self._id_instance_collector_consume)
             channel.stop_consuming(self._id_instance_collector_consume)
             self.close_active_connection()
@@ -171,7 +171,7 @@ class ImageProcessor(RabbitMQ):
         self._rabbit_processor.rabbitmq.start_server()
 
     def __close_rabbit_processor_handler(self):
-        if not isinstance(self._rabbit_processor, NoneType):
+        if self._rabbit_processor is not None:
             self._rabbit_processor.rabbitmq.close_active_connection()
             self._rabbit_processor = None
 

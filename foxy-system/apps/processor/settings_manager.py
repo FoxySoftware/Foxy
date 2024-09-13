@@ -158,13 +158,13 @@ class SettingManager():
     
     @property
     def hsv_lower_area(self) -> np.ndarray:
-        if isinstance(self.__hsv_lower_color_area, NoneType):
+        if self.__hsv_lower_color_area is None:
             self.get_hsv_color_area_info()
         return self.__hsv_lower_color_area
         
     @property
     def hsv_upper_area(self)-> np.ndarray:
-        if isinstance(self.__hsv_upper_color_area, NoneType):
+        if self.__hsv_upper_color_area is None:
             self.get_hsv_color_area_info()
         return self.__hsv_upper_color_area
     

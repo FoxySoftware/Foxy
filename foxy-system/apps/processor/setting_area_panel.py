@@ -191,7 +191,7 @@ class SettingAreaPanel():
             return key.replace("_", " ")
         
         def replace_none(v, value_replace):
-            if isinstance(v, NoneType):
+            if v is None:
                 return value_replace
             return v
         

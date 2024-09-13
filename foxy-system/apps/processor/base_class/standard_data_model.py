@@ -18,7 +18,7 @@ class StandardDataModel:
     
     @property
     def value(cls) -> any:
-        if isinstance(cls.__value, NoneType):
+        if cls.__value is None:
             return cls.default
         return cls.__value
     
