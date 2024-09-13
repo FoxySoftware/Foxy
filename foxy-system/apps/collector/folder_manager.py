@@ -232,7 +232,7 @@ class FolderManager:
     
     @staticmethod
     def get_link(path: str | None, string_link: str = "Open File", is_path_folder: bool = False):
-        path_source = Env.FOXY_PATH.value
+        path_source:str = Env.FOXY_PATH.value
         if not isinstance(path, str):
             return ""
         if path.lower().endswith(".png"):
@@ -253,10 +253,10 @@ class FolderManager:
             encoded_path_source = urllib.parse.quote(path_source)
             link = f"[link=file://{encoded_path_source}/{encoded_path}]{string_link}[/link]"
         else:
-            win_path = path.replace("/", "\\")
-            if " " in win_path or " " in path_source:
-                return f"{path_source}\{win_path}"
-            link = f"[link=file://{path_source}\{win_path}]{string_link}[/link]"
+            win_path = path.replace(" ", "%20")
+            win_path_source = path_source.replace("\\", "/")
+            win_path_source = win_path_source.replace(" ", "%20")
+            link = f"[link=file:///{win_path_source}/{win_path}]{string_link}[/link]"
             
         return link
         
