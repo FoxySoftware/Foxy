@@ -80,21 +80,81 @@ class AreasOcr():
         return list_areas
 
 
+    # @staticmethod
+    # def identify_green_box(file_mask_path: str | None,
+    #                        hsv_lower_color_area: np.ndarray,
+    #                        hsv_upper_color_area: np.ndarray) -> tuple[list[dict[str, Union[int, np.ndarray]]], np.ndarray]:
+    #     """Identifies green boxes in the given image based on HSV color thresholds and ignores areas smaller than 10 pixels.
+
+    #     Args:
+    #         file_mask_path (str): Path to the image file.
+    #         hsv_lower_color_area (np.ndarray): Lower bound of the HSV color range.
+    #         hsv_upper_color_area (np.ndarray): Upper bound of the HSV color range.
+
+    #     Returns:
+    #         Tuple[List[Dict[str, Union[int, np.ndarray]]], np.ndarray]: 
+    #             - List of dictionaries where each dictionary contains:
+    #                 - "number": an integer representing the area number
+    #                 - "rect_area": a rectangle area in the form of a contour approximation (cv2.findContours).
+    #             - The image with identified contours.
+    #     """
+    #     if file_mask_path is None:
+    #         return [], None
+        
+    #     image = cv2.imread(file_mask_path)
+    #     if image is None:
+    #         raise ValueError(f"Image not found at path: {file_mask_path}")
+        
+    #     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    #     mask = cv2.inRange(hsv, hsv_lower_color_area, hsv_upper_color_area)
+    #     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    #     rectangles_map_list = []
+    #     number_area = 0
+    #     min_area_threshold = 100  # Minimum area threshold in pixels
+        
+    #     for contour in contours:
+    #         if cv2.contourArea(contour) < min_area_threshold:
+    #             continue
+            
+    #         perimeter = cv2.arcLength(contour, True)
+    #         approx = cv2.approxPolyDP(contour, 0.02 * perimeter, True)
+            
+    #         if len(approx) == 4:
+    #             # Calculate the convex hull to ensure the shape is closed
+    #             hull = cv2.convexHull(approx)
+    #             hull_area = cv2.contourArea(hull)
+    #             contour_area = cv2.contourArea(approx)
+                
+    #             # Consider the contour only if it is fully enclosed and the areas match closely
+    #             if abs(hull_area - contour_area) / hull_area < 0.05:
+    #                 rectangles_map_list.append({"number": number_area, "rect_area": approx})
+    #                 number_area += 1
+
+    #     return rectangles_map_list, image
+
     @staticmethod
     def identify_green_box(file_mask_path: str | None,
-                           hsv_lower_color_area: np.ndarray,
-                           hsv_upper_color_area: np.ndarray) -> tuple[list[dict[str, Union[int, np.ndarray]]], np.ndarray]:
-        """Identifies green boxes in the given image based on HSV color thresholds and ignores areas smaller than 10 pixels.
+                        hsv_lower_color_area: np.ndarray,
+                        hsv_upper_color_area: np.ndarray,
+                        tolerance_y: int = 20,  # Tolerancia para agrupar en filas
+                        tolerance_x: int = 20   # Tolerancia para agrupar en columnas
+                        ) -> tuple[list[dict[str, Union[int, np.ndarray]]], np.ndarray]:
+      
+        """Identifies green boxes in the given image based on HSV color thresholds and groups them by rows and columns,
+        accounting for imperfect alignment.
 
         Args:
             file_mask_path (str): Path to the image file.
             hsv_lower_color_area (np.ndarray): Lower bound of the HSV color range.
             hsv_upper_color_area (np.ndarray): Upper bound of the HSV color range.
+            tolerance_y (int): Tolerance for grouping areas into rows based on their y-coordinate proximity.
+            tolerance_x (int): Tolerance for grouping areas into columns based on their x-coordinate proximity.
 
         Returns:
             Tuple[List[Dict[str, Union[int, np.ndarray]]], np.ndarray]: 
                 - List of dictionaries where each dictionary contains:
-                    - "number": an integer representing the area number
+                    - "number": an integer representing the area number.
                     - "rect_area": a rectangle area in the form of a contour approximation (cv2.findContours).
                 - The image with identified contours.
         """
@@ -121,20 +181,67 @@ class AreasOcr():
             approx = cv2.approxPolyDP(contour, 0.02 * perimeter, True)
             
             if len(approx) == 4:
-                # Calculate the convex hull to ensure the shape is closed
                 hull = cv2.convexHull(approx)
                 hull_area = cv2.contourArea(hull)
                 contour_area = cv2.contourArea(approx)
                 
-                # Consider the contour only if it is fully enclosed and the areas match closely
                 if abs(hull_area - contour_area) / hull_area < 0.05:
                     rectangles_map_list.append({"number": number_area, "rect_area": approx})
                     number_area += 1
 
-        return rectangles_map_list, image
+        bounding_boxes = [(cv2.boundingRect(r["rect_area"]), r) for r in rectangles_map_list]
+        bounding_boxes.sort(key=lambda b: b[0][1])
+        rows = []
+        current_row = []
+        for i, (bbox, rect) in enumerate(bounding_boxes):
+            x, y, w, h = bbox
 
+            if not current_row:
+                current_row.append((bbox, rect))
+            else:
+                _, prev_y, _, prev_h = current_row[-1][0]
+                if abs(y - prev_y) <= tolerance_y:
+                    current_row.append((bbox, rect))
+                else:
+                    rows.append(current_row)
+                    current_row = [(bbox, rect)]
+        
+        if current_row:
+            rows.append(current_row)
 
-   
+        ordered_rectangles_map_list = []
+        number_area = 0
+
+        for row in rows:
+            row.sort(key=lambda b: b[0][0])
+            current_column_group = []
+            columns = []
+
+            for i, (bbox, rect) in enumerate(row):
+                x, y, w, h = bbox
+
+                if not current_column_group:
+                    current_column_group.append((bbox, rect))
+                else:
+                    prev_x, _, prev_w, _ = current_column_group[-1][0]
+                    if abs(x - prev_x) <= tolerance_x:
+                        current_column_group.append((bbox, rect))
+                    else:
+                        columns.append(current_column_group)
+                        current_column_group = [(bbox, rect)]
+
+            if current_column_group:
+                columns.append(current_column_group)
+
+            for column_group in columns:
+                for bbox, rect in column_group:
+                    rect["number"] = number_area
+                    ordered_rectangles_map_list.append(rect)
+                    number_area += 1
+
+        return ordered_rectangles_map_list, image
+        
+    
     @staticmethod
     def get_color_info_from_image(image_path: str) -> dict[str, any]:
         """"
