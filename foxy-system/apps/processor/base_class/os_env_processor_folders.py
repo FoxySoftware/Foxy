@@ -54,6 +54,7 @@ class EnvFolders(Enum):
     HSV_COLOR_AREA: str = "4_COLOR_OF_AREAS"  # Image with an HSV color indicating a specific area
     AREAS_IMAGE_OCR:str = "7_AREAS_OCR_IMAGE"  
     IMAGES_SETTING_TESTING:str = "8_TEST_IMAGES"
+    SUB_IMAGES_TO_REMOVE:str = "9_SUB_IMAGES_TO_REMOVE"
     CAPTURES: str = "B_CAPTURES_TO_PROCESS_WITH_OCR"  # Folder where all captures or snapshots are saved
     AREAS_IMAGE_OCR_LISTED:str = "C_AREAS_OCR_IMAGE_LISTED"  
     CROPPED_AREAS_OCR: str = "D_CROPPED_IMAGES_OCR"
@@ -126,6 +127,7 @@ class _default(Enum):
     HSV_COLOR_AREA: str = "4_COLOR_OF_AREAS"  # Image with an HSV color indicating a specific area
     AREAS_IMAGE_OCR:str = "7_AREAS_OCR_IMAGE"  
     IMAGES_SETTING_TESTING:str = "8_TEST_IMAGES"
+    SUB_IMAGES_TO_REMOVE:str = "9_SUB_IMAGES_TO_REMOVE"
     CAPTURES: str = "B_CAPTURES_TO_PROCESS_WITH_OCR"  # Folder where all captures or snapshots are saved
     AREAS_IMAGE_OCR_LISTED:str = "C_AREAS_OCR_IMAGE_LISTED"  
     CROPPED_AREAS_OCR: str = "D_CROPPED_IMAGES_OCR"

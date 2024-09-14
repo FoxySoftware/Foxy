@@ -33,6 +33,10 @@ def hash_database(database_path):
 
 
 def hash_file(file_path, algorithm='md5'):
+    
+    if file_path is None:
+        return None
+    
     hash_algo = hashlib.new(algorithm)
     
     with open(file_path, 'rb') as file:

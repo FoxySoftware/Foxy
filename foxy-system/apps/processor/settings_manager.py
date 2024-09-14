@@ -12,6 +12,7 @@ from base_class.resolution_dataclass import Resolution
 from base_class.sections import AreaSectionsPrefix, ConfigSections
 from processor.base_class.os_env_geral import OsEnvGeneral as Env
 from processor.base_class.source_mode import SourceMode
+from processor.resource_processor import hash_file
 
 
 menu_ocr_process = ConfigMenuProject.INIT_OCR_PROCESS.value
@@ -28,6 +29,7 @@ class SettingManager():
         self.section_area_image_ocr = ConfigSections.AREAS_IMAGE_OCR.value
         self.section_area_image_ocr_listed = ConfigSections.AREAS_IMAGE_OCR_LISTED.value
         self.section_setting_areas = ConfigSections.SECTION_SETTING_AREAS_OCR.value
+        self.section_sub_images_to_remove = ConfigSections.SUB_IMAGE_TO_REMOVE.value
         self.section_project_state = ConfigSections.PROJECT_SESSION_STATE.value
         
         self.folder_manager = folder_manager
@@ -106,6 +108,11 @@ class SettingManager():
         dict_queues_collector_processor = self.get_queues_session_info()
         if dict_ini_file.get(self.section_project_state, None) != dict_queues_collector_processor[self.section_project_state]:
             self.settings.update_section(section=self.section_project_state, data_dict= dict_queues_collector_processor[self.section_project_state])
+            
+        dict_sub_img_to_remove = self.get_list_sub_image_to_remove_info()
+        if dict_ini_file.get(self.section_sub_images_to_remove, None) != dict_sub_img_to_remove[self.section_sub_images_to_remove]:
+            self.settings.update_section(section=self.section_sub_images_to_remove, data_dict= dict_sub_img_to_remove[self.section_sub_images_to_remove])
+
         return
         
         
@@ -276,9 +283,11 @@ class SettingManager():
                             "file_name": file_name,
                             "resolution_image": f"{width}, {height}",
                             "required_resolution" : self.project_resolution.string_value,
-                            "error_message" :error_message,
                             "image":link,
-                            "folder": self.folder_manager.get_link(path=self.folder_manager.get_path(folder=folder),is_path_folder=True) 
+                            "folder": self.folder_manager.get_link(path=self.folder_manager.get_path(folder=folder),is_path_folder=True),
+                            "hash_file": hash_file.hash_file(file_path=file_path),
+                            "error_message" :error_message,
+ 
                     } }
             if section == self.section_area_image_ocr_listed:
                 dict_info[section_name].pop("total_areas")
@@ -363,7 +372,7 @@ class SettingManager():
             for new_area_model in areas_models:
                 sub_dictionary = dict_setting_areas.get(f"{self.section_area_prefix}{new_area_model.key.value}", None)
                 if not sub_dictionary:
-                    self.__map_areas_state[new_area_model.x.value] = False
+                    self.__map_areas_state[new_area_model.key.value] = False
                     self.update_areas_ocr_section_config(area_model=new_area_model)
                     continue
                 key = int(sub_dictionary["key"])
@@ -497,6 +506,22 @@ class SettingManager():
         except:
             pass
         return list_dict_image
+
+    def get_list_sub_image_to_remove_info(self) -> dict[str,dict[str, str]]:
+        required = False
+        list_img_to_remove = []
+        list_path_sub_images_to_remove= self.folder_manager.get_list_path_files(folder=EnvFolders.SUB_IMAGES_TO_REMOVE, extension=".png")
+        if list_path_sub_images_to_remove:
+            list_img_to_remove = [self.folder_manager.get_file_name_from_path(path= path, without_extension=False) for path in list_path_sub_images_to_remove]
+        return { self.section_sub_images_to_remove : {
+                                    "required" : str(required),
+                                    "images":list_img_to_remove,
+                                    "folder": self.folder_manager.get_link(path=self.folder_manager.get_path(folder=EnvFolders.SUB_IMAGES_TO_REMOVE),
+                                                                           is_path_folder=True) 
+                    } }
+        
+
+
 
 
 if __name__ == "__main__":

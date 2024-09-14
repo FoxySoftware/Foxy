@@ -286,7 +286,9 @@ class MenuImageCollector(MenuAreas):
         panel_5 = ConfigSections.SECTION_SETTING_AREAS_OCR.value
         panel_6 = ConfigSections.PROJECT_SESSION_STATE.value
         panel_7 = ConfigSections.TASK_IN_PROGRESS.value
-        only_sections = [panel_1, panel_2, panel_3, panel_4, panel_5, panel_6, panel_7]
+        panel_8 = ConfigSections.SUB_IMAGE_TO_REMOVE.value
+
+        only_sections = [panel_1, panel_2, panel_3, panel_4, panel_5, panel_6, panel_7, panel_8]
         data_config_only_sections = {}
         
         for key, value in data_config.items():
@@ -714,6 +716,7 @@ class MenuImageCollector(MenuAreas):
         return self.option_show_panel_project
     
     def start_collector_consume(self):
+        
         self.image_processor.start_consume_collector()
         
     

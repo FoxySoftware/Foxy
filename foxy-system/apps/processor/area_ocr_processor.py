@@ -1,10 +1,9 @@
-from types import NoneType
 from typing import Union
 import cv2
 import numpy as np
 from cv2.typing import MatLike
 from base_class.area_ocr_model import AreaOcrModel
-
+from PIL import Image, ImageChops
 class AreasOcr():
 
     @staticmethod    
@@ -292,3 +291,18 @@ class AreasOcr():
         width: int
         height, width, _ = image.shape
         return width, height
+    
+    @staticmethod
+    def replace_subimages_with_black_cv2(main_image, subimages):
+        for subimage in subimages:
+            sub_height, sub_width = subimage.shape[:2]
+            
+            result = cv2.matchTemplate(main_image, subimage, cv2.TM_SQDIFF_NORMED)
+            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+            if min_val < 1e-1:  
+                top_left = min_loc
+                bottom_right = (top_left[0] + sub_width, top_left[1] + sub_height)
+                main_image[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]] = np.zeros((sub_height, sub_width, 3), dtype=np.uint8)
+
+        return main_image

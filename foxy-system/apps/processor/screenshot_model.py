@@ -9,6 +9,8 @@ from base_class.name_processor import NameProcessor
 from base_class.shared_keys import PropertyCaptureSession, SharedKeys
 from typing import get_type_hints
 
+from processor.area_ocr_processor import AreasOcr
+
 @dataclass
 class ImageModel():
         name:str
@@ -166,14 +168,23 @@ class ScreenShotModel(NameProcessor):
             x = area_model.x.value
             w = area_model.w.value
             cropped_image = self.image_source_model.image[y:y+h, x:x+w]
-
+            list_img_path = self.folder_manager.get_list_path_files(folder=EnvFolders.SUB_IMAGES_TO_REMOVE, extension=".png")
+            list_img = []
+            if list_img_path:
+                for path_img in list_img_path:
+                    sub_images = cv2.imread(path_img)
+                    list_img.append(sub_images)    
+                cropped_image = AreasOcr.replace_subimages_with_black_cv2(main_image=cropped_image, subimages=list_img)
+            
             if self.test_mode:
                 path = self.folder_manager.get_file_path(folder=EnvFolders.TEMP_FILES, file_name=f"{name}.png")
                 cv2.imwrite(path, cropped_image)
+                self.folder_manager.change_permissions(path=path)
                 area_model.path_image_cropped.set_value(path)
             elif self.save_image_cropped:
                 path = self.folder_manager.get_file_path(folder=EnvFolders.CROPPED_AREAS_OCR, file_name=f"{name}.png")
                 cv2.imwrite(path, cropped_image)
+                self.folder_manager.change_permissions(path=path)
                 area_model.path_image_cropped.set_value(path)
             
             if improve_definition:

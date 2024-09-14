@@ -9,6 +9,7 @@ panel_4 = ConfigSections.AREAS_IMAGE_OCR_LISTED.value
 panel_5 = ConfigSections.SECTION_SETTING_AREAS_OCR.value
 panel_6 = ConfigSections.PROJECT_SESSION_STATE.value
 panel_7 = ConfigSections.TASK_IN_PROGRESS.value
+panel_8 = ConfigSections.SUB_IMAGE_TO_REMOVE.value
 
 dict_panel_title_en = {
     f"{panel_1}_EN": "PROJECT OVERVIEW  🗃️ ",
@@ -18,6 +19,8 @@ dict_panel_title_en = {
     f"{panel_5}_EN": "OCR AREA SETTINGS 🛠️ ",
     f"{panel_6}_EN": "PROJECT SESSION STATE 🚦 ",
     f"{panel_7}_EN": "TASK IN PROGRESS 📈 ", 
+    f"{panel_8}_EN": "SUB IMAGES TO REMOVE ⛔", 
+
 }
 
 dict_panel_title_es = {
@@ -28,6 +31,8 @@ dict_panel_title_es = {
     f"{panel_5}_ES": "CONFIGURACIONES DE ÁREAS OCR 🛠️",
     f"{panel_6}_ES": "ESTADO DE LA SESIÓN DEL PROYECTO 🚦 ",
     f"{panel_7}_ES": "TAREA EN PROCESO 📈 ", 
+    f"{panel_8}_ES": "SUB IMAGENES A REMOVER ⛔", 
+
 }
 
 dict_panel_title_pt = {
@@ -38,6 +43,7 @@ dict_panel_title_pt = {
     f"{panel_5}_PT": "CONFIGURAÇÕES DE ÁREA DE OCR 🛠️ ",
     f"{panel_6}_PT": "ESTADO DA SESSÃO DO PROJETO 🚦 ",
     f"{panel_7}_PT": "TAREFA EM ANDAMENTO 📈 ",  
+    f"{panel_8}_PT": "SUB IMAGENS A REMOVER ⛔"
 }
 
 

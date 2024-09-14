@@ -4,7 +4,7 @@ from screenshot_model import CroppedImageArea, ScreenShotModel
 import warnings
 import torch
 
-# Filtrar warnings específicos
+# Filter warnings 
 warnings.filterwarnings(
     "ignore",
     category=FutureWarning,
