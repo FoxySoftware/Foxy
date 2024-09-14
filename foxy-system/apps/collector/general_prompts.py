@@ -151,6 +151,7 @@ class GeneralPrompts:
         # MARK: OLD MENU WELCOME - require refactor !
         clear_terminal()
         rprint(f"[green]{text_title.title}[green]")
+
         options = [self.option_select_language, new_project, select_project]
         
         if list_projects is None or len(list_projects) == 0:
@@ -172,7 +173,7 @@ class GeneralPrompts:
 
         clear_terminal()
         rprint(f"[green]{text_title.title}[green]")
-        
+
         rprint(f"[green]{title}[/green]")
         rprint(f"[white]{help}[/white]\n")
         
@@ -257,11 +258,6 @@ class GeneralPrompts:
                 r'(?::\d+)?'  # optional port
                 r'(?:/?|[/?]\S+)$', re.IGNORECASE)
             
-            file_pattern = re.compile(
-                                    r'^file:///'  # file:///
-                                    r'((/[A-Za-z0-9._%+-]+)+)'  # Ruta de archivo válida
-                                )
-
 
             if not re.match(url_pattern, current.strip()):
                 raise inquirer.errors.ValidationError("", reason=f"Invalid URL :{current.strip()}")
@@ -285,7 +281,6 @@ class GeneralPrompts:
             if number < min or number > max:
                 raise inquirer.errors.ValidationError("", reason=f"Number must be between {min} and {max}.")
             return True
-        
         question = [inquirer.Text("ask_number", message=ask, validate=number_validation)]
         answers = inquirer.prompt(question, theme=GreenPassion(), raise_keyboard_interrupt= True)
         return round(float(answers["ask_number"]), 2)
@@ -306,6 +301,7 @@ class GeneralPrompts:
                 choices= choices ,
             ),
         ]
+
         answers = inquirer.prompt(questions, theme=GreenPassion(), raise_keyboard_interrupt= True)
         if not answers:
             answers = {}
@@ -326,7 +322,6 @@ class GeneralPrompts:
         
         clear_terminal()
         rprint(f"[green]{text_title.title}[green]")
-        print("")
         total_lines_description = 0 
         title_and_description:int = int((len(dict_text_help.keys())/len(self.available_language.keys()))/2)
         for step in range(0, title_and_description):
@@ -384,7 +379,6 @@ class GeneralPrompts:
         
         clear_terminal()
         rprint(f"[green]{text_title.title}[green]")
-        rprint(f"")
         selected_vars:dict[str,list] = {}
         for _set, cols in dict_set_checks.items():
             default:list = dict_set_defaults[_set] or []
