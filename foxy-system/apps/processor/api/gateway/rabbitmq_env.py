@@ -31,6 +31,7 @@ class RabbitMqEnv():
         self.url = f'http://{host}:{port}/api/exchanges/{self.vhost_encoded}/{self.exchange_name_encoded}/bindings/source'
     
     def get_list_routing_keys(self, filter_project_name:str=None, filter_module_source:str = None) -> list[str] | Exception  :
+        filter_project_name = filter_project_name.lower()
         response = requests.get(self.url, auth=HTTPBasicAuth(self.username, self.password))
         if response.status_code == 200:
             bindings = response.json()
