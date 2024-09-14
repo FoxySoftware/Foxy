@@ -362,7 +362,11 @@ class MenuImageCollector(MenuAreas):
                                                                                     self.option_stop],
                                                                     folder=EnvFolders.AREAS_IMAGE_OCR,
                                                                     max_image_resolution=self.setting_manager.project_resolution,
-                                                                    extension_str=".png"),
+                                                                    extension_str=".png",
+                                                                    list_remove_i_after_validate=self.config_project_panel.red_options,
+                                                                    key_item=f"{ConfigSections.AREAS_IMAGE_OCR.value}_{self.current_language}" ,
+                                                                    key_item_2=f"{ConfigSections.AREAS_IMAGE_OCR_LISTED.value}_{self.current_language}"
+                                                                    ),
             self.option_main_setting_area:self.menu_main_setting_areas,
             self.option_automatic_next: self.automatic_next_required_step,
             self.option_init_ocr_process: self.init_threads_ocr_process,

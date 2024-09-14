@@ -196,6 +196,7 @@ class GeneralPrompts:
               extension_str:str= ".png",
               list_remove_i_after_validate:list[str] = None,
               key_item:str= None,
+              key_item_2:str= None,
               )-> str :
         
         clear_terminal()
@@ -240,7 +241,13 @@ class GeneralPrompts:
                                 list_remove_i_after_validate and \
                                 key_item in list_remove_i_after_validate:
             
-            list_remove_i_after_validate.remove(key_item) 
+            list_remove_i_after_validate.remove(key_item)
+        
+        if answers["menu_file"] == option_to_validate and \
+                                list_remove_i_after_validate and \
+                                key_item_2 in list_remove_i_after_validate:
+            
+            list_remove_i_after_validate.remove(key_item_2) 
             
         return answers["menu_file"]
 
