@@ -56,7 +56,7 @@ class SessionManager():
     def create_session_id(self):
         timestamp = int(time.time()*1000)
         milliseconds = str(timestamp)[:-3]
-        random_letters:List[str] = random.choices("QWERTYUIOPASDFGHJKLZXCVBNM", k=3)
+        random_letters:List[str] = random.choices("QWERTYUIOPASDFGHJKLZXCVBNM", k=5)
         self.session_code:str = "".join(random_letters)
         return f"{timestamp}_{milliseconds}_{self.project_name}_{self.session_code}_session"
     
