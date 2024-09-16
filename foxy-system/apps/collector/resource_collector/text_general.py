@@ -1,4 +1,8 @@
 en = {
+    "title_duration_capture_process_EN": "Set the desired capture process duration in minutes and seconds.", 
+    "help_duration_seconds_EN" : "For example, 5.30 means 5 minutes and 30 seconds, or enter 0 for an indefinite value.",
+    "ask_minute_seconds_EN": "Enter a value to set the duration of the capture process.",
+    
     "option_back_EN": "⏎ Return",
     "option_default_EN": "➤ Default",
     "option_next_EN": "➔ Continue",
@@ -78,6 +82,10 @@ en = {
 }
 
 es = {
+    "title_duration_capture_process_ES": "Establezca la duración deseada del proceso de captura en minutos y segundos.",
+    "help_duration_seconds_ES" : "Por ejemplo, 5.30 significa 5 minutos y 30 segundos, o ingrese 0 para un valor indeterminado.",
+    "ask_minute_seconds_ES": "Ingrese un valor para definir la duración del proceso de capturas.",
+    
     "option_back_ES": "⏎ Regresar",
     "option_default_ES": "➤ Por Defecto",
     "option_next_ES": "➔ Continuar",
@@ -150,6 +158,10 @@ es = {
     }
 
 pt = {
+    "title_duration_capture_process_PT": "Defina a duração desejada do processo de captura em minutos e segundos.",
+    "help_duration_seconds_PT": "Por exemplo, 5.30 significa 5 minutos e 30 segundos, ou insira 0 para um valor indefinido.",
+    "ask_minute_seconds_PT": "Insira um valor para definir a duração do processo de captura.",
+    
     "option_back_PT": "⏎ Voltar",
     "option_default_PT": "➤ Padrão",
     "option_next_PT": "➔ Continuar",

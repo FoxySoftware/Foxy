@@ -227,11 +227,17 @@ class ImageCollector(VirtualScreen, SessionManager, ImageManager):
             current_time_event = get_time()
             total_frames = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        while get_time() - time_start < time_end and not self.stop_event.is_set():
+        while not self.stop_event.is_set():
+            
             if self.pause_event.is_set():
                 time.sleep(1)
                 continue
             
+            if get_time() >= time_end:
+                self.current_task = f"{process_name}: finished."
+                self.stop_event.set()
+                break
+                
             current_time_event = get_time()
 
             if self.current_mode == SourceMode.WEB:

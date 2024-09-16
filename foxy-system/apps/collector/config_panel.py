@@ -315,16 +315,18 @@ class ConfigProjectPanel():
                       
                 self.console.print(self.main_layout)
                 time.sleep(seconds_period)
+                
+                
+            self.last_data_update = function_return_dict()
+            table = self.create_table_from_section(section=self.auto_updatable_section, settings=self.last_data_update)
             title:str= text_panel.dict_panel_title[f'{self.auto_updatable_section}_{self.current_language}']
+            panel_task:Panel = Panel(table, title=title, border_style=current_style)
             panel_state = Panel(Text(text=""), title= "STOPPED", border_style="bold red")
             self.main_layout["state"].update(panel_state)
             self.main_layout["auto_updatable"].update(panel_task)
             clear_terminal()
             self.console.print(self.main_layout)
          
-
-
-
 
 class RedOptionException(Exception):
     """Base class for custom exceptions."""

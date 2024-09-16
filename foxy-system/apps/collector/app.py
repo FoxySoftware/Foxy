@@ -164,7 +164,7 @@ class MenuImageCollector(GeneralPrompts):
         self.screen_resolution:Resolution = Resolution.FOUR_K
         self.config_data = {}
         self.process_fps:float = None
-        
+        self._duration_capture_process:int = 1e+300
         # video recording
         self.video_seconds_recording = 60
         self.image_collector:ImageCollector = None
@@ -172,6 +172,7 @@ class MenuImageCollector(GeneralPrompts):
         self.__folder_manager: FolderManager | None = None
         self.__config_project_panel:ConfigProjectPanel | None = None 
         self.__config_manager:ConfigManager | None = None
+        
         
         super().__init__(current_language = language,
                         folder_manager=lambda: self.folder_manager)
@@ -327,7 +328,8 @@ class MenuImageCollector(GeneralPrompts):
                                                           existing_names=self.list_project_folder)
                 
    
-        option = self.prompt_options(default_option=None, others_options=[self.option_video_source, self.option_web_source], message= "Select a source" )
+        option = self.prompt_options(default_option=None, others_options=[self.option_video_source, self.option_web_source], 
+                                     message= "Select a source" )
         
         if option == self.option_web_source:
             self.current_mode = SourceMode.WEB
@@ -624,8 +626,12 @@ class MenuImageCollector(GeneralPrompts):
                 print(f"Fail to load Project Folders. {e}.")
                     
         return self.list_project_folder 
-        
-        
+    
+    @staticmethod    
+    def split_float_number(num):
+        int_part, decimal_part = str(num).split(".")
+        return int(int_part), int(decimal_part)
+    
     def handle_percent_trigger(self, section, option_key, title_percent_key:str, help_percent_key:str, ask_percent_key:str) :
         print(section)
         value = self.prompt_ask_float_value(
@@ -637,6 +643,18 @@ class MenuImageCollector(GeneralPrompts):
         return self.option_show_panel_project
 
     def init_thread_collector_process(self):
+        if self.current_mode == SourceMode.WEB:
+            minute_seconds =self.prompt_ask_float_value( title= text_general.map[f"title_duration_capture_process_{self.current_language}"],
+                                                         help= text_general.map[f"help_duration_seconds_{self.current_language}"],
+                                                         main_title=False,
+                                                         ask=text_general.map[f"ask_minute_seconds_{self.current_language}"],
+                                        minimum=0, limit=11340, round_value=False)
+            if float(minute_seconds) == 0.0:
+                self._duration_capture_process = 1e+300
+            else:
+                minute, seconds = self.split_float_number(num=minute_seconds)
+                self._duration_capture_process = minute * 60 + seconds
+            
         threads = self.parallel_process()
         self.wait_for_processes(threads)
         self.config_manager.update_section(section=self.config_project_panel.auto_updatable_section,
@@ -722,7 +740,7 @@ class MenuImageCollector(GeneralPrompts):
             raise Exception("initialize image collector first")
         if self.current_mode == SourceMode.WEB:
             self.image_collector.start_chrome_driver_web(self.url)
-            self.image_collector.main_process()
+            self.image_collector.main_process(timer_process_seconds=self._duration_capture_process)
             self.image_collector.stop_chrome_driver_web()
         elif self.current_mode == SourceMode.VIDEO:
             self.image_collector.main_process()

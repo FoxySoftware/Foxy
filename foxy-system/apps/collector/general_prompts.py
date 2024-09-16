@@ -168,30 +168,32 @@ class GeneralPrompts:
         answers = inquirer.prompt(questions, theme=GreenPassion(),raise_keyboard_interrupt=True)
         return answers["start"]
     
-    def prompt_ask_float_value(self, title:str, help:str, ask:str) -> float:
+    def prompt_ask_float_value(self, ask:str,  title:str = None, help:str = None, minimum = 1, limit = 100, main_title= True, round_value=True) -> float:
         # MARK: OLD MENU ASK FLOAT VALUE 
-
-        clear_terminal()
-        rprint(f"[green]{text_title.title}[green]")
-
-        rprint(f"[green]{title}[/green]")
-        rprint(f"[white]{help}[/white]\n")
+        if main_title:
+            clear_terminal()
+            rprint(f"[green]{text_title.title}[green]")
         
+        if title and help:
+            rprint(f"[green]{title}[/green]")
+            rprint(f"[white]{help}[/white]\n")
+            
         def number_validation(answers, current):
             try:
                 number = float(current)
             except ValueError:
                 raise inquirer.errors.ValidationError("", reason="Input must be a number.")
             
-            if number < 1 or number > 100:
-                raise inquirer.errors.ValidationError("", reason="Number must be between 1 and 100.")
+            if number < minimum or number > limit:
+                raise inquirer.errors.ValidationError("", reason=f"Number must be between {minimum} and {limit}.")
             return True
         
         question = [inquirer.Text("ask_number", message=ask, validate=number_validation)]
         answers = inquirer.prompt(question, theme=GreenPassion())
-
-        return round(float(answers["ask_number"]), 2)
-    
+        if round_value:
+            return round(float(answers["ask_number"]), 2)
+        else:
+            return(answers["ask_number"])
     
     def prompt_string_name_value(self, ask:str, existing_names:list[str],
                                    current_name:str= None,

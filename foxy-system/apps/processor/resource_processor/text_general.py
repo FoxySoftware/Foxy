@@ -1,7 +1,6 @@
 
 
 en = {
-        
         "option_copy_from_other_area_EN": "Copy properties from another area",
         "message_copy_from_other_area_EN": "Select the area from which to copy the configurations",
 
@@ -124,6 +123,7 @@ en = {
 
 
 es = {
+    
         "option_copy_from_other_area_ES": "Copiar las propiedades de otra área",
         "message_copy_from_other_area_ES": "Seleccione el área desde la cual copiar las configuraciones",
        
@@ -243,8 +243,6 @@ es = {
     }
 
 pt = {
-    
-    "option_copy_from_other_area_PT": "Copiar as propriedades de outra área",
     "message_copy_from_other_area_PT": "Selecione a área de onde copiar as configurações", 
         
     "option_activate_gpu_PT": "Ativar GPU para o processador de OCR",
