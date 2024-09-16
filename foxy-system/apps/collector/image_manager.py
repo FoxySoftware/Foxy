@@ -372,13 +372,14 @@ class ImageManager():
         self.interest_trigger_area_required = False
         return area
         
-    def get_area_of_comparison(self, minimum_width = 1, minimum_height= 1) -> ComparisonArea|Exception:
+    def get_area_of_comparison(self, minimum_width = 1, minimum_height= 1) -> ComparisonArea|None:
         #MARK: Get area of comparison
         area_image_folder = EnvFolders.COMPARISON_AREA
         file_mask_path = self.folder_manager.get_the_recent_file_path(folder=area_image_folder, only_extension=".png")
+        self.comparison_area_required = False
+
         if not file_mask_path: 
-            self.comparison_area_error_message = "Image file no found"
-            raise ValueError("Image file no found")
+           return None
         width_image = 0
         height_image = 0
         with Image.open(file_mask_path) as img:
@@ -394,7 +395,6 @@ class ImageManager():
             raise ValueError(error_message)
         self.get_hsv_color_area_info()
         area = self.get_area(file_mask_path, minimum_width, minimum_height,  EnvFolders.COMPARISON_AREA.value)
-        self.comparison_area_required = False
         return area
        
 
@@ -424,7 +424,7 @@ class ImageManager():
         list_path_trigger = self.folder_manager.get_list_path_files(folder=EnvFolders.LIST_TRIGGER_IMAGES, extension=".png")
         return list_path_trigger
     
-    def get_last_trigger_start_session(self)-> StartSessionTriggerImage | None:
+    def get_last_trigger_start_session(self) -> StartSessionTriggerImage | None:
         #MARK: Get last trigger start session
         file_path = self.folder_manager.get_the_recent_file_path(EnvFolders.START_SESSION_TRIGGER_IMAGE, only_extension=".png")
         if not file_path:
@@ -448,12 +448,15 @@ class ImageManager():
             threshold_trigger_image = self.threshold_similarity_end_percent)
         return trigger
     
-    def draw_trigger_rectangle(self, image:MatLike, x:int, y:int, w:int, h:int, loc:np.ndarray):
-        #MARK: Draw rectangle rectangle
+    def draw_trigger_rectangle(self, image: np.ndarray, x: int, y: int, w: int, h: int, loc: np.ndarray) -> np.ndarray:
+        #MARK: Draw rectangle
+        padding = 5
         for pt in zip(*loc[::-1]):
-            pt = (pt[0] + x, pt[1] + y)
-            cv2.rectangle(image, pt,
-                        (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+            adjusted_pt = (pt[0] + x, pt[1] + y)
+            cv2.rectangle(image, 
+                        (adjusted_pt[0] - padding, adjusted_pt[1] - padding), 
+                        (adjusted_pt[0] + w + padding, adjusted_pt[1] + h + padding), 
+                        (0, 0, 0), 2) 
         return image
     
             # create new image from thi result

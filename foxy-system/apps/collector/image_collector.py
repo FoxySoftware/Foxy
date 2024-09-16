@@ -198,7 +198,7 @@ class ImageCollector(VirtualScreen, SessionManager, ImageManager):
 
         # MARK: Capture screenshot
         interest_area: TriggerArea = self.get_indicators_trigger_area()
-        comparison_area: ComparisonArea = self.get_area_of_comparison()
+        comparison_area: ComparisonArea | None = self.get_area_of_comparison()
         previous_image_comparison_area: MatLike = None
         list_triggers: list[TriggerImage] = self.create_list_of_trigger_images()
         interest_x, interest_y, interest_w, interest_h = interest_area.x, interest_area.y, interest_area.w, interest_area.h
@@ -298,7 +298,7 @@ class ImageCollector(VirtualScreen, SessionManager, ImageManager):
                 ):
                     self.current_task = f"{process_name}: image trigger detected."
 
-                    if not isinstance(trigger_image, EndSessionTriggerImage):
+                    if not isinstance(trigger_image, EndSessionTriggerImage) and comparison_area is not None:
                         previous_image_comparison_area = cv2.cvtColor(
                             source_image_matlike[comparison_area.y:comparison_area.y + comparison_area.h,
                                                 comparison_area.x: comparison_area.x + comparison_area.w],
@@ -311,7 +311,7 @@ class ImageCollector(VirtualScreen, SessionManager, ImageManager):
                     break
 
             # COMPARISON AREA
-            if self.is_session_started and not jump and counter_frame_sub_session_diff < max_frame_diff:
+            if self.is_session_started and not jump and counter_frame_sub_session_diff < max_frame_diff and comparison_area is not None:
                 source_image_comparison_area = cv2.cvtColor(
                     source_image_matlike[comparison_area.y:comparison_area.y + comparison_area.h,
                                         comparison_area.x: comparison_area.x + comparison_area.w],
