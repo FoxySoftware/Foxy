@@ -1,7 +1,9 @@
+import warnings
 import pandas as pd
 from base_class.data_processor_enums import TxDualIndex, TxThirdIndexDimension
 
 
+warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
 
 class DataProcessing:
@@ -239,41 +241,52 @@ class DataProcessing:
 
     
     @staticmethod
-    def _populate_data_frame_tx(super_list_data:list[list[dict[str,any]]],
-                                df_model:pd.DataFrame,
-                                list_keys:list[any], 
-                                tx_dual_index:TxDualIndex = TxDualIndex(INDEX_0="group", INDEX_1="name"), 
-                                third_dimension_index_keys:TxThirdIndexDimension = TxThirdIndexDimension(LIST_INDEX=["value"]),
-                                )-> pd.DataFrame:
+    def _populate_data_frame_tx(super_list_data: list[list[dict[str, any]]],
+                                df_model: pd.DataFrame,
+                                list_keys: list[any], 
+                                tx_dual_index: TxDualIndex = TxDualIndex(INDEX_0="group", INDEX_1="name"), 
+                                third_dimension_index_keys: TxThirdIndexDimension = TxThirdIndexDimension(LIST_INDEX=["value"]),
+                                ) -> pd.DataFrame:
         """
-        Populate a DataFrame model with transaction data.
+        Populate a DataFrame model with transaction data, improving performance.
         
         Visualization:
         - super_list_data
-          |
-          +-- (inner_data_list)
+        |
+        +-- (inner_data_list)
                 |
                 +-- (data)
-                      |
-                      +-- df_model
+                    |
+                    +-- df_model
                             |
                             +-- (dimension_0, dimension_1, key)
         """
-        for index, inner_data_list  in enumerate(super_list_data) :
-            
+        updates = {}
+
+        for index, inner_data_list in enumerate(super_list_data):
             for data in inner_data_list:
                 dimension_0 = data.get(tx_dual_index.INDEX_0, tx_dual_index.DEFAULT_VALUE_OF_0) or tx_dual_index.DEFAULT_VALUE_OF_0
                 dimension_1 = data.get(tx_dual_index.INDEX_1, tx_dual_index.DEFAULT_VALUE_OF_1) or tx_dual_index.DEFAULT_VALUE_OF_1
-                
+
                 if len(third_dimension_index_keys.LIST_INDEX) > 1:
                     for key in third_dimension_index_keys.LIST_INDEX:
-                        df_model.loc[list_keys[index], (dimension_0, dimension_1, key)] = data.get(key)
+                        updates[(list_keys[index], (dimension_0, dimension_1, key))] = data.get(key)
                 else:
-                    df_model.loc[list_keys[index], (dimension_0, dimension_1)] = data.get(third_dimension_index_keys.LIST_INDEX[0])
+                    updates[(list_keys[index], (dimension_0, dimension_1))] = data.get(third_dimension_index_keys.LIST_INDEX[0])
 
-            df_model = df_model.sort_index(axis=1)
+    
+        for (index, column), value in updates.items():
+            df_model.loc[index, column] = value
+                
+
+        df_model = df_model.sort_index(axis=1)
+
+        # Drop columns that are entirely NaN
         df_model = df_model.dropna(axis=1, how='all')
+
         return df_model
+    
+    
     
     @staticmethod
     def _create_multi_index_data_frame_model(list_dict_model:list[dict[str,any]],
