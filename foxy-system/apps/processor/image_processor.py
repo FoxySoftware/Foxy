@@ -95,10 +95,11 @@ class ImageProcessor(RabbitMQ):
         self.start_server()
         #just in case. sleep .5
         time.sleep(0.5)
+        self.consume_queue(consumer_tag=self._id_instance_collector_consume)
+        
         count = self._check_message_in_queue_collector()
         if count == 0:
             self.set_current_data_task_dict(screenshot=None, message= "Empty Queue. Awaiting for incoming Image to process")
-        self.consume_queue(consumer_tag=self._id_instance_collector_consume)
     
     def _check_message_in_queue_collector(self) -> int | None:
         count = None
