@@ -36,7 +36,9 @@ class FolderManager:
             folder_path = self.get_path(folder)
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
-                self.change_permissions(self.__main_folder)
+        project_path = os.path.join(self.__main_folder, self.__project_name)
+        self.change_permissions(project_path)
+
 
     def get_path(self, folder:EnvFolders) -> str:
         if folder.value == EnvFolders.MAIN_FOLDER.value:
