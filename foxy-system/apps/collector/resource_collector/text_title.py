@@ -45,7 +45,8 @@ logo = \
 _|_|  ||  |[_./[___    \__.|__||___|___[___\__. |  |__||  \  
 ____________________________________________________________
 
-By Denis Bueltan 2024.  This software reserves the use of copyright©️.
+By Denis Bueltan 2024.  This software reserves the use
+of copyright©️.
 website author: https://bueltan.github.io 
 
 '''
