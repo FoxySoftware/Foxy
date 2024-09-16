@@ -120,20 +120,21 @@ class MenuAreas(PanelArea):
                                     message=text_general.map[f"message_to_continue_{self.current_language}"])
         return next_inert_menu
     
-    def handle_group_area(self, area_model:AreaOcrModel, list_areas_model:list[AreaOcrModel], current_option:str ):
+    def handle_group_area(self, area_model:AreaOcrModel, current_option:str ):
         # MARK:HANDLE GROUP AREA
         # name_area ∈ None a∈A
         # name_area ∈/ None group_name a∈/A∩B
         
         list_name_group_with_prefix = [f"{self.name_with_prefix_or_name(name=area_model.group_name.value, prefix_name=area_model.name.value)}" 
-                                for area_model in list_areas_model if area_model.group_name.value is not None]
+                                for area_model in self.list_areas_model if area_model.group_name.value is not None]
         
-        list_name_of_group = [area_model.group_name.value for area_model in list_areas_model if area_model.group_name.value is not None]
+        list_name_of_group = [area_model.group_name.value for area_model in self.list_areas_model if area_model.group_name.value is not None]
         set_name_of_group:set[str] = set(list_name_of_group)
         list_name_of_group = list(set_name_of_group)
         
         #REMOVE CURRENT AREA GROUP OF THE LIST OPTIONS
-        if area_model.group_name.value:
+        
+        if area_model.group_name.value is not None and area_model.group_name.value in list_name_of_group:
             list_name_of_group.remove(area_model.group_name.value)
         
         list_to_group_to_remove:list[str] =[]
@@ -393,7 +394,6 @@ class MenuAreas(PanelArea):
 
             elif current_option in {self.option_menu_set_group_name_area, self.option_create_a_new_group}:
                 current_option = self.handle_group_area(area_model = current_area_model,
-                                                        list_areas_model = list_areas_model,
                                                         current_option = current_option)
                 
             elif current_option == self.option_menu_allow_list_ocr:
@@ -547,8 +547,11 @@ class MenuAreas(PanelArea):
             return [int(num) for num in re.findall(r'\d+', s)]
         
         def check_if_name_is_unique(new_name_area:str, group_name_source:str | None ) -> bool:
-            list_area_coincidence = [area for area in self.list_areas_model if area.name.value == new_name_area and area.group_name.value == group_name_source]
-            return len(list_area_coincidence) == 0
+            for area in self.list_areas_model:
+                #print(f"area name : {area.name.value}, group name : {area.group_name.value}")
+                if area.name.value == new_name_area and area.group_name.value == group_name_source:
+                    return False
+            return True
             
         def get_new_name_area(area_model:AreaOcrModel) -> str:
             name_area_model:str = area_model.name.value
