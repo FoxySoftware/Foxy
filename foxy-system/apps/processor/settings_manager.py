@@ -296,6 +296,7 @@ class SettingManager():
         file_path = self.folder_manager.get_the_recent_file_path(folder=folder, only_extension=".png")
         if not file_path:
             error_message = "Image file no found"
+            self.setting_areas.clear_file()
             return get_dict()
         file_name = self.folder_manager.get_file_name_from_path(path=file_path, without_extension=False)
         
@@ -305,6 +306,7 @@ class SettingManager():
         total_areas = len(list_areas)
         if total_areas == 0 and section == self.section_area_image_ocr:
             error_message = "None area found"
+            self.setting_areas.clear_file()
             return get_dict()
         
         width, height = AreasOcr.get_image_resolution(image)

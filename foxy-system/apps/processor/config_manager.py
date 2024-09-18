@@ -41,7 +41,9 @@ class ConfigManager:
         with open(self.filename, 'w') as config_file:
             self.config.write(config_file)
     
-
+    def clear_file(self):
+        with open(self.filename, 'w') as file:
+            self.config.write(file)
 
 # if __name__ == "__main__":
 #     config_manager = ConfigManager('config.ini')
