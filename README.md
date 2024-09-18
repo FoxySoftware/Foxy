@@ -1,7 +1,7 @@
 ![](https://raw.githubusercontent.com/FoxySoftware/FoxySoftware.github.io/main/resource/foxy_title.png)
 
 
-Foxy is a cross-platform software available in English, Spanish, and Portuguese, designed for real-time web scraping and video file scraping using Optical Character Recognition (OCR).
+Foxy is a cross-platform software designed for real-time web scraping and video file scraping.
 
 ##  Modules Overview
 
