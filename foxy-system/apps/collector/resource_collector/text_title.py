@@ -19,7 +19,8 @@ title = \
 _|_|  ||  |[_./[___    \__.|__||___|___[___\__. |  |__||  \    |  ||__||__/|__||___[___
 _______________________________________________________________________________________
 
-By Denis Bueltan 2024.  This software reserves the use of copyright©️.
+This software is distributed under the GPL license, with all rights reserved ©️.
+website : https://foxysoftware.github.io
 website author: https://bueltan.github.io 
 
 '''
@@ -45,8 +46,8 @@ logo = \
 _|_|  ||  |[_./[___    \__.|__||___|___[___\__. |  |__||  \  
 ____________________________________________________________
 
-By Denis Bueltan 2024.  This software reserves the use
-of copyright©️.
+This software is distributed under the GPL license, with all rights reserved ©️.
+website : https://foxysoftware.github.io
 website author: https://bueltan.github.io 
 
 '''
