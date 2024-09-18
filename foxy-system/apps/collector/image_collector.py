@@ -233,7 +233,7 @@ class ImageCollector(VirtualScreen, SessionManager, ImageManager):
                 time.sleep(1)
                 continue
             
-            if get_time() >= time_end:
+            if get_time() > time_end:
                 self.current_task = f"{process_name}: finished."
                 self.stop_event.set()
                 break

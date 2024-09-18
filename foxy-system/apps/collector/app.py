@@ -627,10 +627,7 @@ class MenuImageCollector(GeneralPrompts):
                     
         return self.list_project_folder 
     
-    @staticmethod    
-    def split_float_number(num):
-        int_part, decimal_part = str(num).split(".")
-        return int(int_part), int(decimal_part)
+
     
     def handle_percent_trigger(self, section, option_key, title_percent_key:str, help_percent_key:str, ask_percent_key:str) :
         print(section)
@@ -641,20 +638,33 @@ class MenuImageCollector(GeneralPrompts):
         )
         self.config_manager.update_section(section=section, options={option_key: value})
         return self.option_show_panel_project
-
+    
+    
+    def define_duration_capture_process(self):
+        
+        def split_float_number(num):
+            if "." in str(num):
+                int_part, decimal_part = str(num).split(".")
+                return int(int_part), int(decimal_part)
+            else:
+                return int(num), 0 
+        
+        
+        minute_seconds =self.prompt_ask_float_value( title= text_general.map[f"title_duration_capture_process_{self.current_language}"],
+                                                help= text_general.map[f"help_duration_seconds_{self.current_language}"],
+                                                main_title=False,
+                                                ask=text_general.map[f"ask_minute_seconds_{self.current_language}"],
+                            minimum=0, limit=11340, round_value=False)
+        if float(minute_seconds) == 0.0:
+            self._duration_capture_process = 1e+300
+        else:
+            minute, seconds = split_float_number(num=minute_seconds)
+            self._duration_capture_process = minute * 60 + seconds
+            
     def init_thread_collector_process(self):
         if self.current_mode == SourceMode.WEB:
-            minute_seconds =self.prompt_ask_float_value( title= text_general.map[f"title_duration_capture_process_{self.current_language}"],
-                                                         help= text_general.map[f"help_duration_seconds_{self.current_language}"],
-                                                         main_title=False,
-                                                         ask=text_general.map[f"ask_minute_seconds_{self.current_language}"],
-                                        minimum=0, limit=11340, round_value=False)
-            if float(minute_seconds) == 0.0:
-                self._duration_capture_process = 1e+300
-            else:
-                minute, seconds = self.split_float_number(num=minute_seconds)
-                self._duration_capture_process = minute * 60 + seconds
-            
+            self.define_duration_capture_process()
+
         threads = self.parallel_process()
         self.wait_for_processes(threads)
         self.config_manager.update_section(section=self.config_project_panel.auto_updatable_section,
