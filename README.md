@@ -1,7 +1,8 @@
 
 ![](https://raw.githubusercontent.com/FoxySoftware/FoxySoftware.github.io/main/resource/FOXY.webp)
 
- 
+
+ ### [Web Site](https://foxysoftware.github.io)
 ## Modules Overview
 
 **Foxy** is a versatile cross-platform software designed for real-time web scraping and video file extraction, offering powerful tools for capturing and processing data with precision.
