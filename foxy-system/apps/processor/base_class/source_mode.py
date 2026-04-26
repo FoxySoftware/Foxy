@@ -1,16 +1,7 @@
-from enum import Enum
+import os
+import sys
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-class SourceMode(Enum):
-    WEB = "WEB"
-    VIDEO = "VIDEO"
-    
-    @classmethod
-    def _from_name(cls, name: str)-> "SourceMode":
-        try:
-            # Match the name with the enum members
-            return cls[name]
-        except KeyError:
-            raise ValueError(f"No ModeSource found for string '{name}'")
+from core.source_mode import SourceMode
 
-    
