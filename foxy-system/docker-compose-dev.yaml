@@ -38,6 +38,27 @@ services:
     depends_on:
       - foxy-rabbitmq
 
+  foxy-api:
+    user: foxy
+    container_name: foxy-api
+    init: true
+    restart: unless-stopped
+    image: bueltan/foxy-system-base:libs
+    command: >
+      bash -c "python -m pip install --user --no-cache-dir fastapi==0.115.0 'uvicorn[standard]==0.30.6' python-multipart==0.0.17 &&
+      python -m uvicorn api_app.main:app --host 0.0.0.0 --port 3053"
+    ports:
+      - 3053:3053
+    volumes:
+      - ../Projects:/apps/Projects
+      - ../config:/apps/config
+      - ./apps:/apps
+    working_dir: /apps
+    networks:
+      - main_foxy_net
+    depends_on:
+      - foxy-rabbitmq
+
 networks:
   main_foxy_net:
     name: main_foxy_net

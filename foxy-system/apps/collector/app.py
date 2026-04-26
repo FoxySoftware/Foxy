@@ -15,6 +15,7 @@ import time
 import threading
 import signal
 from rich import print as rprint
+from core.services.collector_service import CollectorService
 from config_manager import ConfigManager
 from config_panel import Colors, ConfigProjectPanel, clear_terminal
 from custom_event import KeyCtrlZInterrupt
@@ -592,39 +593,9 @@ class MenuImageCollector(GeneralPrompts):
         return option_selected
 
     def get_projects_folder(self):
-        _list_project_folder = FolderManager.list_folders(directory=EnvFolders.MAIN_FOLDER.value)
-        self.list_project_folder = []
-        for folder_project in _list_project_folder:
-            try:
-                _folder_manager = FolderManager(project_name=folder_project, screen_id=None, pasive=True)
-                
-                path_setting_file:str= _folder_manager.get_file_path(folder=EnvFolders.MAIN_FOLDER,
-                                                                file_name=Env.NAME_FILE_SETTINGS.value)
-                
-                exist_setting_file_exist:bool = FolderManager.path_exists(path=path_setting_file)
-                if exist_setting_file_exist:
-                    __config_manager = ConfigManager(path_setting_file)
-                    __config_data = __config_manager.load_ini_to_dict()
-                    
-                    dict_project_section = __config_data.get(ConfigSections.PROJECT.value, None)
-                    if isinstance(dict_project_section, dict):
-                        _current_language = dict_project_section.get("language", None)
-                        _project_name = dict_project_section.get("name", None)
-                        _current_mode = dict_project_section.get("mode", None)
-                        _screen_resolution_name:str = dict_project_section.get("screen_resolution", None)
-                    else:
-                        continue
-                    if not None in {_current_language, _project_name, _current_mode, _screen_resolution_name}:
-                        if not _current_language in [*self.available_language.values()]:
-                            continue
-                        try:
-                            SourceMode._from_name(name=_current_mode)
-                        except:
-                            continue
-                        self.list_project_folder.append(folder_project)
-            except Exception as e:
-                print(f"Fail to load Project Folders. {e}.")
-                    
+        self.list_project_folder = CollectorService().list_valid_projects(
+            available_languages=[*self.available_language.values()]
+        )
         return self.list_project_folder 
     
 
